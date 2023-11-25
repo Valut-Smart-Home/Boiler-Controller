@@ -13,6 +13,9 @@
 #define OUTPU_PIN_1 A3
 #define OUTPU_PIN_2 A4
 #define OUTPU_PIN_3 A5
+#define INPUT_PIN_1 13
+#define INPUT_PIN_2 12
+#define INPUT_PIN_3 11
 
 OpenthermData message;
 RS485Class rs485{Serial, 1, RS485_PIN, -1};
@@ -35,6 +38,12 @@ void setup() {
   pinMode(OUTPU_PIN_1, OUTPUT);
   pinMode(OUTPU_PIN_2, OUTPUT);
   pinMode(OUTPU_PIN_3, OUTPUT);
+  pinMode(INPUT_PIN_1, INPUT);
+  digitalWrite(INPUT_PIN_1, HIGH);
+  pinMode(INPUT_PIN_2, INPUT);
+  digitalWrite(INPUT_PIN_2, HIGH);
+  pinMode(INPUT_PIN_3, INPUT);
+  digitalWrite(INPUT_PIN_3, HIGH);
 
   while (!Serial) ;
   if (!modbus.begin(slave_id, baund))
@@ -61,7 +70,7 @@ void loop() {
     }
   }
 
-  digitalWrite(OUTPU_PIN_1, modbus.coilRead(0));
-  digitalWrite(OUTPU_PIN_2, modbus.coilRead(1));
-  digitalWrite(OUTPU_PIN_3, modbus.coilRead(2));
+  digitalWrite(OUTPU_PIN_1, modbus.coilRead(0) | digitalRead(INPUT_PIN_1));
+  digitalWrite(OUTPU_PIN_2, modbus.coilRead(1) | digitalRead(INPUT_PIN_2));
+  digitalWrite(OUTPU_PIN_3, modbus.coilRead(2) | digitalRead(INPUT_PIN_3));
 }
